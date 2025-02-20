@@ -1,46 +1,64 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Circle U
+    Circle U
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
 
-	<div class="position-relative text-start">
-		<img src="{{ asset('images/paris.png') }}" alt="Vue de Paris" class="img-fluid w-100" style="max-height: 500px; object-fit: cover;">
-		<div class="position-absolute bottom-0 end-0 bg-white p-4 shadow rounded m-3" style="max-width: 500px;">
-			<h1 class="fs-4 fw-semibold">
-				Circle U. Alumni Platform
-				<br>
-				<i>pour les étudiants de l’UP Cité</i>
-			</h1>
-			<p class="fs-5 text-primary fw-bold">Connectez-vous et partagez vos expériences avec CircleU !
-			</p>
-		</div>
-	</div>
+    <div class="position-relative text-start">
+        <img src="{{ asset('images/fond_home.png') }}" alt="Vue de Paris" class="img-fluid w-100"
+             style="max-height: 500px; object-fit: cover;">
+        <div class="position-absolute bottom-0 end-0 bg-white p-4 shadow rounded m-3" style="max-width: 500px;">
+            <h1 class="fs-4 fw-semibold">
+                Circle U. Alumni Platform
+                <br>
+                <i>pour les étudiants de l’UP Cité</i>
+            </h1>
+            <p class="fs-5 text-primary fw-bold">Connectez-vous et partagez vos expériences avec CircleU !
+            </p>
+        </div>
+    </div>
 
-	<div class="container my-5">
-		<div class="d-flex justify-content-between align-items-center" style="max-width: 900px; margin: 0 auto;">
-			<div class="col-md-4 d-flex flex-column justify-content-center align-items-center gap-4">
-				<a href="{{ path('app_blog') }}" class="btn btn-primary px-4 py-2">Voir le blog et chatter ! →</a>
-				<a href="#" class="btn btn-primary px-4 py-2">Créer un nouveau post →</a>
-			</div>
-			<div class="col-md-8 d-flex justify-content-center align-items-center">
-				<div class="card shadow-sm text-center d-flex flex-column" style="width: 300px;">
-					<div class="d-flex justify-content-between align-items-center p-3">
-						<div class="bg-primary text-white p-2 rounded" style="width: 80px; text-align: center;">
-							<span class="fs-4">29</span><br>
-							<small>Mars</small>
-						</div>
-						<h2 class="fs-5 fw-bold mb-0">Prochain événement</h2>
-					</div>
-					<div class="d-flex flex-column justify-content-center align-items-center gap-3 p-3">
-						<p class="text-primary fs-5 fw-semibold text-center">Fantastic workshops online</p>
-						<a href="#" class="btn btn-primary fw-semibold px-4 py-2">S'inscrire</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center" style="max-width: 900px; margin: 0 auto;">
+            <div class="col-md-4 d-flex flex-column justify-content-center align-items-center gap-4">
+                <a href="{{ path('app_blog') }}" class="btn btn-primary px-4 py-2">Voir le blog et chatter ! →</a>
+                <a href="#" class="btn btn-primary px-4 py-2">Créer un nouveau post →</a>
+            </div>
+            <div class="col-md-8 d-flex justify-content-center align-items-center">
+                <div class="card shadow-sm text-center d-flex flex-column" style="width: 300px;">
+                    <div class="d-flex justify-content-between align-items-center p-3">
+                        <div class="bg-primary text-white p-2 rounded" style="width: 80px; text-align: center;">
+                            <span class="fs-4">29</span><br>
+                            <small>Mars</small>
+                        </div>
+                        <h2 class="fs-5 fw-bold mb-0">Prochain événement</h2>
+                    </div>
+                    <div class="d-flex flex-column justify-content-center align-items-center gap-3 p-3">
+                        <p class="text-primary fs-5 fw-semibold text-center">Fantastic workshops online</p>
+                        <a href="#" class="btn btn-primary fw-semibold px-4 py-2">S'inscrire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
