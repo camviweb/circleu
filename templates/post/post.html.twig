@@ -1,0 +1,88 @@
+{# templates/post/create.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouveau Post{% endblock %}
+
+{% block body %}
+    <h1 class="form-title">Créer un nouveau Post</h1>
+
+    {{ form_start(form, {'attr': {'class': 'post-form'}}) }}
+        <div class="form-group">
+            {{ form_label(form.category, 'Catégorie') }}
+            {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.purpose, 'But') }}
+            {{ form_widget(form.purpose, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.description, 'Description') }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.picture, 'Image (optionnelle)') }}
+            {{ form_widget(form.picture, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.createdDate, 'Date de création') }}
+            {{ form_widget(form.createdDate, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Créer le Post</button>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .form-title {
+            color: #04649C;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .post-form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f7f7f7;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            border-color: #04649C;
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: #04649C;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover {
+            background-color: #035a78;
+        }
+    </style>
+{% endblock %}
