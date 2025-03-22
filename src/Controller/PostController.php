@@ -29,7 +29,7 @@ class PostController extends AbstractController
             // Gérer le fichier de l'image si elle existe
             $pictureFile = $form->get('picture')->getData();
             if ($pictureFile) {
-                $newFilename = uniqid() . '.' . $pictureFile->guessExtension();
+                $newFilename = uniqid().'.'.$pictureFile->guessExtension();
                 $pictureFile->move(
                     $this->getParameter('post_images_directory'), // Définir ce paramètre dans votre config services.yaml
                     $newFilename
@@ -42,7 +42,7 @@ class PostController extends AbstractController
             $entityManager->flush();
 
             // Rediriger vers une page de confirmation ou vers la liste des posts
-            return $this->redirectToRoute('app_post_success');
+            return $this->redirectToRoute('app_blog');
         }
 
         return $this->render('post/post.html.twig', [

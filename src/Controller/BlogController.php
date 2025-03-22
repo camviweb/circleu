@@ -2,17 +2,23 @@
 
 namespace App\Controller;
 
+use App\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 final class BlogController extends AbstractController
 {
     #[Route('/blog', name: 'app_blog')]
-    public function index(): Response
+    public function index(PostRepository $postRepository): Response
     {
-        return $this->render('blog/index.html.twig', [
-            'controller_name' => 'BlogController',
+        // Récupère tous les posts depuis la base de données
+        $posts = $postRepository->findAll();
+
+        // Passe les posts à la vue
+        return $this->render('blog/blog.html.twig', [
+            'posts' => $posts,
         ]);
     }
 }
+?>
