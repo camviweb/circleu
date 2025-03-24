@@ -1,0 +1,8 @@
+{# templates/evenements/show.html.twig #}
+
+<h1>{{ event.title }}</h1>
+<p>Date: {{ event.date|date('Y-m-d H:i') }}</p>
+<p>Duration: {{ event.duration }} hours</p>
+<p>{{ event.description }}</p>
+<img src="{{ asset(event.image) }}" alt="{{ event.title }}">
+<a href="{{ event.link }}">Event Link</a>

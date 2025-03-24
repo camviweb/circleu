@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - {{ event.title }}{% endblock %}
+
+{% block body %}
+    <h1>Inscription à l'événement : {{ event.title }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.nom) }}
+        {{ form_row(form.prenom) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.formation) }}
+        {{ form_row(form.niveau) }}
+        {{ form_row(form.submit) }}
+    {{ form_end(form) }}
+{% endblock %}

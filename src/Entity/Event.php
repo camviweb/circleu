@@ -30,9 +30,6 @@ class Event
     #[ORM\Column(type: 'integer')]
     private int $duration;
 
-    #[ORM\Column(type: 'integer')]
-    private int $nbParticipants;
-
     #[ORM\Column(type: 'date')]
     private \DateTimeInterface $dateLimite;
 
@@ -122,17 +119,6 @@ class Event
         return $this;
     }
 
-    public function getNbParticipants(): ?int
-    {
-        return $this->nbParticipants;
-    }
-
-    public function setNbParticipants(int $nbParticipants): static
-    {
-        $this->nbParticipants = $nbParticipants;
-
-        return $this;
-    }
 
     public function getDateLimite(): ?\DateTimeInterface
     {
