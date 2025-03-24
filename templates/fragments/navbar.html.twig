@@ -25,6 +25,10 @@
     .nav-link:hover::after {
         width: 100%;
     }
+
+    .active::after {
+        width: 100%;
+    }
 </style>
 
 <header class="container-fluid border-bottom">
@@ -45,11 +49,47 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_evenements') }}">ÉVÉNEMENTS</a>
                         </li>
+
+                        <div class="vr mx-3"></div>
+
+                        {% if app.user %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_logout') }}">DÉCONNEXION</a>
+                            </li>
+                        {% endif %}
+                        {% if not app.user %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_login') }}">CONNEXION</a>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
+ <script>
+     // Ajouter la classe active au lien de la page actuelle
+     const currentPath = window.location.pathname;
+     const navLinks = document.querySelectorAll('.nav-link');
+     navLinks.forEach(link => {
+         if (link.getAttribute('href') === currentPath) {
+             link.classList.add('active');
+         }
+     });
+
+     // Empêcher la redirection si l'URL du lien est la même que celle de la page actuelle
+     document.addEventListener('DOMContentLoaded', function () {
+         const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+         navLinks.forEach(function (link) {
+             link.addEventListener('click', function (e) {
+                 const currentPage = window.location.pathname;
+                 const linkHref = link.getAttribute('href');
+
+                 if (currentPage === linkHref) {
+                     e.preventDefault();
+                 }
+             });
+         });
+     });
+ </script>

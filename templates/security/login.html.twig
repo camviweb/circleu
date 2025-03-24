@@ -1,45 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer un utilisateur{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
     <div class="login-container">
         <img src="{{ asset('images/logo_ParisCite.jpg') }}" alt="Université Paris Cité" class="logo">
+
         <form method="post">
-            <label for="email">Adresse mail</label>
-            <input type="email" id="email" name="_username" required>
+            {% if error %}
+                <div class="flash-error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
 
-            <label for="password">Mot de passe</label>
-            <input type="password" id="password" name="_password" required>
+            <label for="username">Email</label>
+            <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
+            <label for="password">Password</label>
+            <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
 
-            <button type="submit" class="login-button">Se connecter</button>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button class="login-button" type="submit">Se connecter</button>
+
+            <a class="mdpOublie" href="https://compte.app.u-paris.fr/midpoint/emailNonce?1">Mot de passe oublié ?</a>
         </form>
     </div>
 {% endblock %}
 
 {% block stylesheets %}
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: #f8f8f8;
-        }
-
-        main {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+        .flash-error {
+            color: #ff0000;
+            margin-bottom: 15px;
         }
 
         .login-container {
@@ -50,7 +40,7 @@
             text-align: center;
             max-width: 400px;
             width: 100%;
-            margin: auto;
+            margin: 40px auto 0;
         }
 
         .logo {
@@ -65,7 +55,7 @@
             margin-bottom: 5px;
         }
 
-        input {
+        .form-control {
             width: 100%;
             padding: 10px;
             border: 2px solid #880E4F;
@@ -73,6 +63,12 @@
             outline: none;
             margin-bottom: 15px;
             font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #6d0c3b;
+            scale: 1.05;
         }
 
         .login-button {
@@ -88,6 +84,18 @@
 
         .login-button:hover {
             background-color: #6d0c3b;
+        }
+
+        .mdpOublie {
+            color: #880E4F;
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 10px;
+            display: block;
+        }
+
+        .mdpOublie:hover {
+            text-decoration: underline;
         }
     </style>
 {% endblock %}
