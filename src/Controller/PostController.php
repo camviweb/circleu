@@ -15,6 +15,10 @@ class PostController extends AbstractController
     #[Route('/post', name: 'app_post')]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->getUser()) {
+    
+            return $this->redirectToRoute('app_login');
+        }
         // Créer une nouvelle instance de Post
         $post = new Post();
         $post->setCreatedDate(new \DateTime());
