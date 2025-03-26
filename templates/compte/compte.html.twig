@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Compte{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h2 class="text-primary">COMPTE</h2>
+    <p class="mb-4">
+        <strong>{{ user.firstName }} {{ user.lastName }}</strong><br>
+        {{ user.email }}
+    </p>
+
+    <h4 class="mt-5 mb-3 text-center">MES POSTS</h4>
+    {% for post in user.posts %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <div>
+                        <strong>{{ user.firstName }}</strong>
+                        <small class="text-muted d-block">{{ post.createdDate|date('d.m.Y H:i') }}</small>
+                    </div>
+                    <span class="text-muted">🔍</span>
+                </div>
+                <p class="mb-3">{{ post.description }}</p>
+
+                <div class="d-flex justify-content-between">
+                    <span>👥 {{ post.comments|length }} commentaire(s)</span>
+                    <span class="text-muted">💬 Commenter...</span>
+                </div>
+
+                <div class="text-end mt-3">
+                    <form method="post" action="{{ path('post_delete', { id: post.id }) }}">
+                        <button class="btn btn-outline-primary btn-sm">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-muted text-center">Aucun post pour le moment.</p>
+    {% endfor %}
+
+    <h4 class="mt-5 mb-3 text-center">MES ÉVÈNEMENTS</h4>
+    {% for event in user.eventsParticipated %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ event.title }}</h5>
+                <p class="card-text text-muted">
+                    📅 {{ event.eventDate|date('d M Y') }}, {{ event.eventDate|date('H:i') }}
+                        – {{ event.eventDate|date_modify('+' ~ event.duration ~ ' minutes')|date('H:i') }}
+
+                </p>
+                <div class="text-end">
+                    <form method="post" action="{{ path('event_cancel', { id: event.id }) }}">
+                        <button class="btn btn-outline-secondary btn-sm">Annuler</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-muted text-center">Aucun évènement à venir.</p>
+    {% endfor %}
+</div>
+
+{% include 'fragments/footer.html.twig' %}
+{% endblock %}
