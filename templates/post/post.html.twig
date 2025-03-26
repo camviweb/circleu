@@ -6,6 +6,7 @@
     <h1 class="form-title">Créer un nouveau Post</h1>
 
     {{ form_start(form, {'attr': {'class': 'post-form'}}) }}
+
         <div class="form-group">
             {{ form_label(form.category, 'Catégorie') }}
             <div class="dropdown-container">
@@ -63,8 +64,12 @@
             margin-bottom: 15px;
         }
 
+        .form-group label {
+            font-weight: 600;
+        }
+
         .form-control {
-            width: 100%;
+            width: 100%; !important;
             padding: 10px;
             border-radius: 4px;
             border: 1px solid #ddd;
@@ -116,10 +121,11 @@
 
         .dropdown-container {
             position: relative;
-            display: inline-block;
+            display: block;
         }
 
         .dropdown-icon {
+            pointer-events: none; /* Empêche d’interférer avec le select */
             position: absolute;
             right: 10px;
             top: 50%;

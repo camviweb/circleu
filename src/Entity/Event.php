@@ -18,7 +18,7 @@ class Event
     #[ORM\Column(type: 'string', length: 255)]
     private string $title;
 
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $eventDate;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

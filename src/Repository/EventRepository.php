@@ -1,6 +1,4 @@
 <?php
-// filepath: /Users/marlenaxynou/circleu/src/Repository/EventRepository.php
-
 
 namespace App\Repository;
 
@@ -13,5 +11,16 @@ class EventRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Event::class);
+    }
+
+    public function findNextEvent()
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.eventDate > :now')
+            ->setParameter('now', new \DateTime())
+            ->orderBy('e.eventDate', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

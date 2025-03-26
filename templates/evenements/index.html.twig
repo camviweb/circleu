@@ -24,7 +24,7 @@
                     <div class="card mb-4 shadow-lg border-0 rounded-4 overflow-hidden">
                         <div class="row g-0">
                             <div class="col-md-4">
-                                <img src="{{ asset(event.image) }}" class="img-fluid h-100 w-100 object-fit-cover"
+                                <img src="{{ asset(event.picture) }}" class="img-fluid h-100 w-100 object-fit-cover"
                                      alt="{{ event.title }}">
                             </div>
                             <div class="col-md-8">
@@ -39,20 +39,18 @@
                                                 'September': 'septembre', 'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
                                             } %}
 
-                                            {% set date = event.date|date('d F Y', 'Europe/Paris') %}
+                                            {% set date = event.eventDate|date('d F Y', 'Europe/Paris') %}
                                             {% set month_in_french = month_translation[date|date('F')] %}
 
-                                            {{ event.date|date('d') }} {{ month_in_french }} {{ event.date|date('Y') }},
-                                            {{ event.date|date('H:i') }}
-                                            - {{ (event.date|date_modify("+" ~ event.duration ~ " hours"))|date('H:i') }}
+                                            {{ event.eventDate|date('d') }} {{ month_in_french }} {{ event.eventDate|date('Y') }},
+                                            {{ event.eventDate|date('H:i') }}
+                                            - {{ (event.eventDate|date_modify("+" ~ event.duration ~ " hours"))|date('H:i') }}
                                         </p>
                                         <p class="card-text">{{ event.description }}</p>
                                     </div>
                                     <div class="text-end">
-                                        {# Only show the register button if the event is in the future #}
-                                        {% if event.date > date() %}
-                                        <a href="{{ path('event_register', { 'id': event.id }) }}">S'inscrire</a>
-                                        {% endif %}
+                                        <a href="{{ path('app_event_show', { 'id': event.id }) }}" class="btn btn-primary px-4 fw-semibold me-2">Détails</a>
+                                        <a href="{{ path('app_event_register', { 'id': event.id }) }}" class="btn btn-outline-primary px-4 fw-semibold">S'inscrire</a>
                                     </div>
                                 </div>
                             </div>

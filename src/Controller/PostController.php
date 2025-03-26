@@ -1,5 +1,5 @@
 <?php
-// src/Controller/PostController.php
+
 namespace App\Controller;
 
 use App\Entity\Post;
@@ -16,12 +16,13 @@ class PostController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         if (!$this->getUser()) {
-    
             return $this->redirectToRoute('app_login');
         }
+
         // Créer une nouvelle instance de Post
         $post = new Post();
         $post->setCreatedDate(new \DateTime());
+        $post->setUser($this->getUser());
 
         // Créer le formulaire
         $form = $this->createForm(PostType::class, $post);

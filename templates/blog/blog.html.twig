@@ -5,6 +5,9 @@
 {% block body %}
     <div class="container py-5">
         <h1 class="mb-5 text-center fw-bold text-primary">BLOG</h1>
+        <div class="text-center mt-4">
+            <a href="{{ path('app_post') }}" class="btn btn-primary btn-lg">Créer un post</a>
+        </div>
     </div>
 
     <div class="row justify-content-center">
@@ -12,32 +15,35 @@
             <div class="col-md-8">
                 <div class="card mb-4 shadow-lg border-0 rounded-4 overflow-hidden">
                     <!-- Badge catégorie (Alumni ou Question) -->
-                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center position-absolute" style="top: 10px; right: 10px; width: 40px; height: 40px; font-weight: bold;">
-                        {{ post.category == 'alumni' ? 'A' : 'Q' }}
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center position-absolute"
+                         style="top: 10px; right: 10px; width: 40px; height: 40px; font-weight: bold;">
+                        {{ post.purpose == 'alumni' ? 'A' : 'Q' }}
                     </div>
+                    <p class="text-muted mb-0" style="position: absolute; top: 60px; right: 10px;">{{ post.category }}</p>
 
                     <div class="card-body">
                         <!-- Informations utilisateur -->
                         <div class="d-flex align-items-center mb-3">
-                            <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-3" width="40" height="40" alt="Avatar utilisateur">
+                            <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-3" width="40"
+                                 height="40" alt="Avatar utilisateur">
                             <div>
-                                <p class="text-muted mb-0">{{ post.createdDate|date('d.m.Y H:i') }}</p>
+                                <h5 class="fw-bold text-primary mb-0">{{ post.user.lastName }} {{ post.user.firstName }}</h5>
+                                <p class="text-muted mb-0">{{ post.createdDate|date('d/m/Y H:i') }}</p>
                             </div>
                         </div>
 
                         <!-- Contenu du post -->
-                        <h5 class="fw-bold text-primary">{{ post.purpose }}</h5>
                         <p class="card-text">{{ post.description }}</p>
 
                         {% if post.picture %}
-                            <img src="{{ asset('uploads/posts/' ~ post.picture) }}" class="img-fluid rounded mb-3" alt="Image du post">
-                        {% else %}
-                            <p>Aucune image pour ce post.</p>
+                            <img src="{{ asset('uploads/posts/' ~ post.picture) }}" class="img-fluid rounded mb-3 post-image"
+                                 alt="Image du post">
                         {% endif %}
 
                         <!-- Nombre de commentaires -->
                         <div class="d-flex align-items-center mt-3">
-                            <img src="{{ asset('images/comment_icon.png') }}" class="rounded-circle me-3" width="30" height="30" alt="Comment">
+                            <img src="{{ asset('images/comment_icon.png') }}" class="rounded-circle me-3" width="30"
+                                 height="30" alt="Comment">
                             <span class="ms-1">{{ post.comments|length }}</span>
                         </div>
 
@@ -45,7 +51,8 @@
                         {% if post.comments is not empty %}
                             <div class="mt-3 p-3 bg-white">
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-2" width="30" height="30" alt="Avatar utilisateur">
+                                    <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-2"
+                                         width="30" height="30" alt="Avatar utilisateur">
                                     <h6 class="fw-bold mb-0 text-primary">{{ post.comments[0].user.name }}</h6>
                                 </div>
                                 <p class="mt-2 mb-0">{{ post.comments[0].content }}</p>
@@ -55,7 +62,8 @@
                         <!-- Zone de texte pour ajouter un commentaire -->
                         <form action="{{ path('app_post_show', {'id': post.id}) }}" method="post" class="mt-4">
                             <div class="form-group">
-                                <textarea name="content" class="form-control" rows="3" placeholder="Ajouter un commentaire..."></textarea>
+                                <textarea name="content" class="form-control" rows="3"
+                                          placeholder="Ajouter un commentaire..."></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary mt-2">Ajouter un commentaire</button>
                         </form>
@@ -66,7 +74,6 @@
                                 <strong class="text-primary">{{ comment.user.name }}</strong>
                                 <p>{{ comment.content }}</p>
                                 <small class="text-muted">{{ comment.createdDate|date('d/m/Y H:i') }}</small>
-
                             </div>
                         {% else %}
                             <p class="text-muted">Aucun commentaire pour le moment.</p>
@@ -79,8 +86,99 @@
         {% endfor %}
     </div>
 
-    <!-- Bouton pour créer un post -->
-    <div class="text-center mt-4">
-        <a href="{{ path('app_post') }}" class="btn btn-primary btn-lg">Créer un post</a>
-    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .no-post-message {
+            font-size: 1.5rem;
+            color: #04649C;
+            margin-top: 50px;
+        }
+
+        .card {
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-image {
+            max-height: 300px; /* Hauteur max de l'image */
+            width: 100%;
+            object-fit: cover; /* Coupe l'image pour garder les proportions */
+            cursor: pointer;
+        }
+
+        #image-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #image-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        #image-overlay.close-overlay {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const images = document.querySelectorAll(".post-image");
+            const overlay = document.createElement("div");
+            overlay.id = "image-overlay";
+            overlay.innerHTML = '<span class="close-overlay">&times;</span><img>';
+            document.body.appendChild(overlay);
+
+            const overlayImage = overlay.querySelector("img");
+            const closeOverlay = overlay.querySelector(".close-overlay");
+
+            function disableScroll() {
+                document.body.style.overflow = "hidden"; // Désactive le scroll
+            }
+
+            function enableScroll() {
+                document.body.style.overflow = ""; // Réactive le scroll
+            }
+
+            images.forEach(img => {
+                img.addEventListener("click", function () {
+                    overlayImage.src = img.src;
+                    overlay.style.display = "flex";
+                    disableScroll();
+                });
+            });
+
+            closeOverlay.addEventListener("click", function () {
+                overlay.style.display = "none";
+                enableScroll();
+            });
+
+            overlay.addEventListener("click", function (e) {
+                if (e.target === overlay) {
+                    overlay.style.display = "none";
+                    enableScroll();
+                }
+            });
+        });
+    </script>
 {% endblock %}

@@ -1,8 +1,48 @@
-{# templates/evenements/show.html.twig #}
+{% extends 'base.html.twig' %}
 
-<h1>{{ event.title }}</h1>
-<p>Date: {{ event.date|date('Y-m-d H:i') }}</p>
-<p>Duration: {{ event.duration }} hours</p>
-<p>{{ event.description }}</p>
-<img src="{{ asset(event.image) }}" alt="{{ event.title }}">
-<a href="{{ event.link }}">Event Link</a>
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .event-image {
+            height: 300px;
+            object-fit: cover;
+            width: 100%;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <img src="{{ asset(event.picture) }}" class="event-image" alt="{{ event.title }}">
+            <div class="card-body">
+                <h2 class="fw-bold text-primary">{{ event.title }}</h2>
+                <p class="text-muted">
+                    <i class="bi bi-calendar-event"></i>
+                    {% set month_translation = {
+                        'January': 'janvier', 'February': 'février', 'March': 'mars', 'April': 'avril',
+                        'May': 'mai', 'June': 'juin', 'July': 'juillet', 'August': 'août',
+                        'September': 'septembre', 'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
+                    } %}
+
+                    {% set date = event.eventDate|date('d F Y', 'Europe/Paris') %}
+                    {% set month_in_french = month_translation[date|date('F')] %}
+
+                    {{ event.eventDate|date('d') }} {{ month_in_french }} {{ event.eventDate|date('Y') }},
+                    {{ event.eventDate|date('H:i') }} - {{ (event.eventDate|date_modify("+" ~ event.duration ~ " hours"))|date('H:i') }}
+                </p>
+                <p class="card-text">{{ event.description }}</p>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Organisé par : {{ event.organizer.firstName }} {{ event.organizer.lastName }}</span>
+                    <a href="{{ path('app_event_register', { 'id': event.id }) }}" class="btn btn-primary fw-semibold">S'inscrire</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ path('app_events') }}" class="btn btn-outline-primary fw-semibold">Retour à la liste des événements</a>
+        </div>
+    </div>
+{% endblock %}

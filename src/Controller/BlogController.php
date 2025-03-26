@@ -12,8 +12,8 @@ final class BlogController extends AbstractController
     #[Route('/blog', name: 'app_blog')]
     public function index(PostRepository $postRepository): Response
     {
-        // Récupère tous les posts depuis la base de données
-        $posts = $postRepository->findAll();
+        // Récupère tous les posts en mettant le plus récent en premier
+        $posts = $postRepository->findBy([], ['createdDate' => 'DESC']);
 
         // Passe les posts à la vue
         return $this->render('blog/blog.html.twig', [
