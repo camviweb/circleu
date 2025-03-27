@@ -6,18 +6,35 @@
     <div class="container py-5">
         <h1 class="mb-5 text-center fw-bold text-primary">BLOG</h1>
         <div class="text-center mt-4">
-            <a href="{{ path('app_post') }}" class="btn btn-primary btn-lg">Créer un post</a>
+            <a href="{{ path('app_post') }}" class="btn category-filter btn-dark btn-lg">Créer un post</a>
         </div>
     </div>
 
+
+<div class="d-flex flex-wrap justify-content-center my-3">
+    <button class="btn category-filter btn-dark" data-category="">Tous</button>
+    {% for category in categories %}
+        <button class="btn category-filter btn-light" data-category="{{ category }}">
+            {{ category }}
+        </button>
+    {% endfor %}
+
+    {% for purpose in purposes %}
+        <button class="btn purpose-filter btn-light" data-purpose="{{ purpose }}">
+            {{ purpose }}
+        </button>
+    {% endfor %}
+
+</div> 
+
     <div class="row justify-content-center">
         {% for post in posts %}
-            <div class="col-md-8">
+            <div class="col-md-8 post-card" data-category="{{ post.category }}" data-purpose="{{ post.purpose }}">
                 <div class="card mb-4 shadow-lg border-0 rounded-4 overflow-hidden">
                     <!-- Badge catégorie (Alumni ou Question) -->
                     <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center position-absolute"
                          style="top: 10px; right: 10px; width: 40px; height: 40px; font-weight: bold;">
-                        {{ post.purpose == 'alumni' ? 'A' : 'Q' }}
+                        {{ post.purpose == 'Alumni' ? 'A' : 'Q' }}
                     </div>
                     <p class="text-muted mb-0" style="position: absolute; top: 60px; right: 10px;">{{ post.category }}</p>
 
@@ -50,7 +67,7 @@
                         <!-- Affichage des premiers commentaires -->
                         {% if post.comments is not empty %}
                             <div id="comments-container-{{ post.id }}">
-                                {% for comment in post.comments[:3] %}
+                                {% for comment in post.comments[:1] %}
                                     <div class="card mt-3 p-3 comment-{{ post.id }}">
                                         <div class="d-flex align-items-center">
                                             <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-2" width="30" height="30" alt="Avatar utilisateur">
@@ -146,10 +163,29 @@
             color: white;
             cursor: pointer;
         }
+
+        .category-filter.btn-light,
+        .purpose-filter.btn-light {
+            background-color: white; 
+            color: #04649C; 
+            border: 2px solid #04649C; 
+            margin: 5px;
+            border-radius: 30px;
+        }
+
+        .category-filter.btn-dark,
+        .purpose-filter.btn-dark{
+            background-color: #04649C; 
+            border: solid #04649C; 
+            color: white;
+            margin: 5px; 
+            border-radius: 30px;
+        }
     </style>
 {% endblock %}
 
 {% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const images = document.querySelectorAll(".post-image");
@@ -201,5 +237,42 @@
                 toggleBtn.textContent = "Voir plus"; // Remet le texte initial
             }
         }
+
+        $(document).ready(function () {
+
+            $(".category-filter").on("click", function () {
+                $(this).siblings().removeClass("btn-dark").addClass("btn-light");
+                $(this).removeClass("btn-light").addClass("btn-dark");
+
+                let selectedCategory = $(".category-filter.btn-dark").data("category") || "";
+
+                $(".post-card").each(function () {
+                    let postCategory = $(this).data("category");
+
+                    if (selectedCategory === "" || postCategory === selectedCategory) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            $(".purpose-filter").on("click", function () {
+                $(this).siblings().removeClass("btn-dark").addClass("btn-light");
+                $(this).removeClass("btn-light").addClass("btn-dark");
+
+                let selectedPurpose = $(".purpose-filter.btn-dark").data("purpose") || "";
+
+                $(".post-card").each(function () {
+                    let postPurpose = $(this).data("purpose");
+
+                    if (selectedPurpose === "" || postPurpose === selectedPurpose) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
     </script>
 {% endblock %}

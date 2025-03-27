@@ -19,6 +19,18 @@ final class BlogController extends AbstractController
         $posts = $postRepository->findAll();
         $forms = [];
 
+        $categories = [
+            'Mobilités' => 'Mobilités',
+            'Séjours Court' => 'Séjours Court',
+            'Cours et Conférences en ligne' => 'Cours Conférences',
+            'Evénements' => 'Evénements',
+        ];
+
+        $purposes = [
+            'Alumni' => 'Alumni',
+            'Question' => 'Question',
+        ];
+
         // Générer un formulaire pour chaque post
         foreach ($posts as $post) {
             $comment = new Comment();
@@ -29,6 +41,8 @@ final class BlogController extends AbstractController
         return $this->render('blog/blog.html.twig', [
             'posts' => $posts,
             'forms' => $forms,
+            'categories' => $categories,
+            'purposes' => $purposes,
         ]);
     }
 
