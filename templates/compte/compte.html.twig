@@ -40,7 +40,14 @@
             <p class="text-muted text-center">Vous n'avez pas encore publié de post, <a href="{{ path('app_post') }}" class="text-primary">publiez-en un</a>.</p>
         {% endfor %}
 
-        <h4 class="mt-5 mb-3 text-center">MES ÉVÈNEMENTS</h4>
+        <h4 class="mt-5 mb-3 text-center">
+            {% if 'ROLE_ADMIN' in user.roles %}
+                MES ÉVÈNEMENTS CRÉÉS
+            {% else %}
+                MES ÉVÈNEMENTS
+            {% endif %}
+        </h4>
+
         {% for event in events %}
             <div class="card mb-4 shadow-lg border-0 rounded-4 overflow-hidden"
                  onclick="redirectToEvent(event, '{{ path('app_event_show', {'id': event.id}) }}')"
@@ -49,28 +56,30 @@
                     <h5 class="card-title">{{ event.title }}</h5>
                     <p class="card-text text-muted">
                         <i class="bi bi-calendar-event"></i>
-                        {% set month_translation = {
-                            'January': 'janvier', 'February': 'février', 'March': 'mars', 'April': 'avril',
-                            'May': 'mai', 'June': 'juin', 'July': 'juillet', 'August': 'août',
-                            'September': 'septembre', 'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
-                        } %}
-
-                        {% set date = event.eventDate|date('d F Y', 'Europe/Paris') %}
-                        {% set month_in_french = month_translation[date|date('F')] %}
-
-                        {{ event.eventDate|date('d') }} {{ month_in_french }} {{ event.eventDate|date('Y') }},
-                        {{ event.eventDate|date('H:i') }}
+                        {{ event.eventDate|date('d F Y H:i', 'Europe/Paris') }}
                         - {{ (event.eventDate|date_modify("+" ~ event.duration ~ " hours"))|date('H:i') }}
                     </p>
                     <div class="text-end">
-                        <form method="post" action="{{ path('app_event_cancel', { id: event.id }) }}">
-                            <button class="btn btn-outline-danger btn-sm">Annuler ma participation</button>
-                        </form>
+                        {% if 'ROLE_ADMIN' in user.roles %}
+                            <form method="post" action="{{ path('app_admin_event_delete', { id: event.id }) }}">
+                                <button class="btn btn-outline-danger btn-sm">Supprimer</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{{ path('app_event_cancel', { id: event.id }) }}">
+                                <button class="btn btn-outline-danger btn-sm">Annuler ma participation</button>
+                            </form>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         {% else %}
-            <p class="text-muted text-center">Vous ne vous êtes pas encore inscrit à un évènement, <a href="{{ path('app_event') }}" class="text-primary">inscrivez-vous</a>.</p>
+            <p class="text-muted text-center">
+                {% if 'ROLE_ADMIN' in user.roles %}
+                    Vous n'avez pas encore créé d'événement, <a href="{{ path('app_event_create') }}" class="text-primary">créez-en un</a>.
+                {% else %}
+                    Vous ne vous êtes pas encore inscrit à un évènement, <a href="{{ path('app_events') }}" class="text-primary">inscrivez-vous</a>.
+                {% endif %}
+            </p>
         {% endfor %}
     </div>
 {% endblock %}

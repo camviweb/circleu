@@ -6,6 +6,7 @@
 parameters:
     locale: fr
     post_images_directory: '%kernel.project_dir%/public/uploads/posts'
+    event_images_directory: '%kernel.project_dir%/public/uploads/events'
 
 services:
     # default configuration for services in *this* file

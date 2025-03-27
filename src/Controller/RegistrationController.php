@@ -16,9 +16,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class RegistrationController extends AbstractController
 {
     #[Route('/events/{id}/register', name: 'app_event_register', requirements: ['id' => '\d+'])]
-    #[isGranted('ROLE_USER')]
     public function register(int $id, Request $request, EntityManagerInterface $entityManager, EventRepository $eventRepository, RegistrationRepository $registrationRepository): Response
     {
+        $user = $this->getUser();
+        if (!$user) {
+            $this->addFlash('danger', 'Vous devez être connecté pour vous inscrire à un événement.');
+            return $this->redirectToRoute('app_login');
+        }
+
         $event = $eventRepository->find($id);
 
         if (!$event) {
@@ -26,16 +31,10 @@ class RegistrationController extends AbstractController
         }
 
         // Vérifier si l'utilisateur est déjà inscrit à cet événement
-        $user = $this->getUser();
         $existingRegistration = $registrationRepository->findOneBy([
             'event' => $event, // Recherche par l'événement
             'email' => $user->getEmail() // Recherche par l'email de l'utilisateur
         ]);
-
-        if (!$user) {
-            $this->addFlash('danger', 'Vous devez être connecté pour vous inscrire à un événement.');
-            return $this->redirectToRoute('app_login');
-        }
 
         if ($existingRegistration) {
             $this->addFlash('danger', 'Vous êtes déjà inscrit à cet événement.');
@@ -80,7 +79,6 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/events/{id}/cancel', name: 'app_event_cancel', requirements: ['id' => '\d+'])]
-    #[isGranted('ROLE_USER')]
     public function cancel(int $id, EntityManagerInterface $entityManager, EventRepository $eventRepository, RegistrationRepository $registrationRepository): Response
     {
         $event = $eventRepository->find($id);

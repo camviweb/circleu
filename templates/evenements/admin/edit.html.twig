@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un événement{% endblock %}
+
+
+{% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2C4A9A;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #2C4A9A;
+            border-radius: 5px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #1f3475;
+            box-shadow: 0px 0px 5px rgba(44, 74, 154, 0.5);
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn-primary {
+            background-color: #2C4A9A;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn-primary:hover {
+            background-color: #1f3475;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="form-container">
+        <h1>Modifier un événement</h1>
+
+        {% if event.picture %}
+            <div class="form-group">
+                <label>Image actuelle :</label>
+                <img src="{{ event.picture }}" alt="Image de l'événement" style="max-width: 100%; height: auto; border-radius: 5px; margin-bottom: 10px;">
+            </div>
+        {% endif %}
+
+        {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_row(form.title) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.eventDate) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.duration) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.dateLimite) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.picture) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.description) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.organizer) }}
+        </div>
+        <div class="form-group">
+            {{ form_row(form.participants) }}
+        </div>
+        <div>
+            <button type="submit" class="btn-primary">Modifier</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.js-select2').select2({
+                placeholder: "Sélectionnez des participants",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const fileInput = document.querySelector("input[type='file']");
+            const maxSize = 8 * 1024 * 1024;
+
+            fileInput.addEventListener("change", function () {
+                const file = fileInput.files[0];
+                if (file && file.size > maxSize) {
+                    alert("L'image est trop volumineuse ! Taille max : 8MB");
+                    fileInput.value = "";
+                }
+            });
+        });
+    </script>
+{% endblock %}

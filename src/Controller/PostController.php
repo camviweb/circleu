@@ -16,6 +16,7 @@ class PostController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         if (!$this->getUser()) {
+            $this->addFlash('danger', 'Vous devez être connecté pour créer un post.');
             return $this->redirectToRoute('app_login');
         }
 

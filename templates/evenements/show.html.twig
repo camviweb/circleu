@@ -36,7 +36,12 @@
 
                 <div class="d-flex justify-content-between align-items-center">
                     <span class="text-muted">Organisé par : {{ event.organizer.firstName }} {{ event.organizer.lastName }}</span>
-                    <a href="{{ path('app_event_register', { 'id': event.id }) }}" class="btn btn-primary fw-semibold">S'inscrire</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_admin_event_edit', { 'id': event.id }) }}" class="btn btn-danger fw-semibold">Modifier</a>
+                        <a href="{{ path('app_admin_event_participants', { 'id': event.id }) }}" class="btn btn-outline-primary fw-semibold">Voir les participants</a>
+                    {% else %}
+                        <a href="{{ path('app_event_register', { 'id': event.id }) }}" class="btn btn-primary fw-semibold">S'inscrire</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

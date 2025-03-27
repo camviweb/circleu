@@ -13,7 +13,7 @@ final class EvenementsController extends AbstractController
     #[Route('/events', name: 'app_events')]
     public function index(EventRepository $eventRepository): Response
     {
-        $events = $eventRepository->findAll();
+        $events = $eventRepository->findBy(['canceledDate' => null]);
 
         return $this->render('evenements/index.html.twig', [
             'events' => $events

@@ -13,6 +13,7 @@
         "doctrine/orm": "^3.3.2",
         "fzaninotto/faker": "*",
         "phpdocumentor/reflection-docblock": "^5.6.1",
+        "phpoffice/phpspreadsheet": "*",
         "phpstan/phpdoc-parser": "^2.1",
         "symfony/asset": "7.2.*",
         "symfony/asset-mapper": "7.2.*",
