@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Comment;
@@ -15,7 +16,30 @@ class CommentController extends AbstractController
     #[Route('/post/{id}', name: 'app_post_show')]
     public function show(Post $post, Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('blog/blog.html.twig', [
+        $user = $this->getUser();
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$user) {
+                $this->addFlash('danger', 'Vous devez être connecté pour commenter.');
+                return $this->redirectToRoute('app_login');
+            }
+
+            $comment->setPost($post);
+            $comment->setUser($user);
+            $comment->setDate(new \DateTime());
+            $comment->setCreatedDate(new \DateTime());
+
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre commentaire a été ajouté.');
+            return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
+        }
+
+        return $this->render('comment/comment.html.twig', [
             'post' => $post,
             'form' => $form->createView(),
         ]);

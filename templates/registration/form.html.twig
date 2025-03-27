@@ -52,22 +52,6 @@
             transition: 0.3s ease-in-out;
         }
 
-        .btn-submit {
-            width: 100%;
-            background-color: #2C4A9A;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-submit:hover {
-            background-color: #1f3475;
-        }
-
         small {
             display: block;
             text-align: center;
@@ -98,9 +82,9 @@
                 {{ form_row(form.niveau, { 'attr': {'readonly': 'readonly'} }) }}
             </div>
             <div>
-                {{ form_row(form.submit, { 'attr': {'class': 'btn-submit'} }) }}
+                {{ form_row(form.submit, { 'attr': {'class': 'btn btn-primary w-100'} }) }}
             </div>
         {{ form_end(form) }}
-        <small>Si des informations sont incorrectes, <br> veuillez les modifier dans votre profil.</small>
+        <small>Ces informations proviennent de votre compte Paris Cité.</small>
     </div>
 {% endblock %}

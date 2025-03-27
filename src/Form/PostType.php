@@ -23,7 +23,7 @@ class PostType extends AbstractType
                     'Mobilités' => 'Mobilités',
                     'Séjours Court' => 'Séjours Court',
                     'Cours et Conférences en ligne' => 'Cours Conférences',
-                    'Evénements' => 'Evénements',
+                    'Événements' => 'Événements',
                 ],
                 'attr' => ['class' => 'form-control']
             ])

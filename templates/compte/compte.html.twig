@@ -3,63 +3,134 @@
 {% block title %}Compte{% endblock %}
 
 {% block body %}
-<div class="container py-5">
-    <h2 class="text-primary">COMPTE</h2>
-    <p class="mb-4">
-        <strong>{{ user.firstName }} {{ user.lastName }}</strong><br>
-        {{ user.email }}
-    </p>
+    <div class="container py-5">
+        <h2 class="text-primary">COMPTE</h2>
+        <p class="mb-4">
+            <strong>{{ user.firstName }} {{ user.lastName }}</strong><br>
+            {{ user.email }}
+        </p>
 
-    <h4 class="mt-5 mb-3 text-center">MES POSTS</h4>
-    {% for post in user.posts %}
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-2">
-                    <div>
-                        <strong>{{ user.firstName }}</strong>
-                        <small class="text-muted d-block">{{ post.createdDate|date('d.m.Y H:i') }}</small>
+        <h4 class="mt-5 mb-3 text-center">MES POSTS</h4>
+        {% for post in posts %}
+            <div class="card mb-4 shadow-lg border-0 rounded-4 overflow-hidden"
+                 onclick="redirectToPost(event, '{{ path('app_post_show', {'id': post.id}) }}')"
+                 style="cursor: pointer;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <div>
+                            <strong>{{ user.fullName }}</strong>
+                            <small class="text-muted d-block">{{ post.createdDate|date('d.m.Y H:i') }}</small>
+                        </div>
+                        <span class="text-muted"><i class="bi bi-chat-dots"></i> {{ post.comments|length }}</span>
                     </div>
-                    <span class="text-muted">🔍</span>
-                </div>
-                <p class="mb-3">{{ post.description }}</p>
 
-                <div class="d-flex justify-content-between">
-                    <span>👥 {{ post.comments|length }} commentaire(s)</span>
-                    <span class="text-muted">💬 Commenter...</span>
-                </div>
+                    <p class="mb-3">{{ post.description }}</p>
+                    {% if post.picture %}
+                        <i class="bi bi-image text-primary"></i>
+                    {% endif %}
 
-                <div class="text-end mt-3">
-                    <form method="post" action="{{ path('post_delete', { id: post.id }) }}">
-                        <button class="btn btn-outline-primary btn-sm">Supprimer</button>
-                    </form>
+                    <div class="text-end mt-3">
+                        <form method="post" action="{{ path('app_post_delete', { id: post.id }) }}">
+                            <button class="btn btn-outline-danger btn-sm">Supprimer mon post</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    {% else %}
-        <p class="text-muted text-center">Aucun post pour le moment.</p>
-    {% endfor %}
+        {% else %}
+            <p class="text-muted text-center">Vous n'avez pas encore publié de post, <a href="{{ path('app_post') }}" class="text-primary">publiez-en un</a>.</p>
+        {% endfor %}
 
-    <h4 class="mt-5 mb-3 text-center">MES ÉVÈNEMENTS</h4>
-    {% for event in user.eventsParticipated %}
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h5 class="card-title">{{ event.title }}</h5>
-                <p class="card-text text-muted">
-                    📅 {{ event.eventDate|date('d M Y') }}, {{ event.eventDate|date('H:i') }}
-                        – {{ event.eventDate|date_modify('+' ~ event.duration ~ ' minutes')|date('H:i') }}
+        <h4 class="mt-5 mb-3 text-center">MES ÉVÈNEMENTS</h4>
+        {% for event in events %}
+            <div class="card mb-4 shadow-lg border-0 rounded-4 overflow-hidden"
+                 onclick="redirectToEvent(event, '{{ path('app_event_show', {'id': event.id}) }}')"
+                 style="cursor: pointer;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.title }}</h5>
+                    <p class="card-text text-muted">
+                        <i class="bi bi-calendar-event"></i>
+                        {% set month_translation = {
+                            'January': 'janvier', 'February': 'février', 'March': 'mars', 'April': 'avril',
+                            'May': 'mai', 'June': 'juin', 'July': 'juillet', 'August': 'août',
+                            'September': 'septembre', 'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
+                        } %}
 
-                </p>
-                <div class="text-end">
-                    <form method="post" action="{{ path('event_cancel', { id: event.id }) }}">
-                        <button class="btn btn-outline-secondary btn-sm">Annuler</button>
-                    </form>
+                        {% set date = event.eventDate|date('d F Y', 'Europe/Paris') %}
+                        {% set month_in_french = month_translation[date|date('F')] %}
+
+                        {{ event.eventDate|date('d') }} {{ month_in_french }} {{ event.eventDate|date('Y') }},
+                        {{ event.eventDate|date('H:i') }}
+                        - {{ (event.eventDate|date_modify("+" ~ event.duration ~ " hours"))|date('H:i') }}
+                    </p>
+                    <div class="text-end">
+                        <form method="post" action="{{ path('app_event_cancel', { id: event.id }) }}">
+                            <button class="btn btn-outline-danger btn-sm">Annuler ma participation</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    {% else %}
-        <p class="text-muted text-center">Aucun évènement à venir.</p>
-    {% endfor %}
-</div>
+        {% else %}
+            <p class="text-muted text-center">Vous ne vous êtes pas encore inscrit à un évènement, <a href="{{ path('app_event') }}" class="text-primary">inscrivez-vous</a>.</p>
+        {% endfor %}
+    </div>
+{% endblock %}
 
-{% include 'fragments/footer.html.twig' %}
+{% block javascripts %}
+    <script>
+        function redirectToPost(event, url) {
+            // Vérifie si l'élément cliqué est un bouton, un lien, un champ de commentaire ou son label ou son image
+            const isButtonOrLink = event.target.closest('button') || event.target.closest('a');
+            const isCommentFieldOrLabel = event.target.closest('label') || event.target.closest('textarea');
+            const isImage = event.target.closest('img');
+
+            // Si l'élément cliqué est un bouton, un lien, un champ de commentaire ou un label, on arrête l'événement
+            if (isButtonOrLink || isCommentFieldOrLabel || isImage) {
+                event.stopPropagation(); // Empêche l'événement de remonter et de déclencher la redirection
+                return;
+            }
+
+            // Sinon, on redirige vers l'URL du post
+            window.location.href = url;
+        }
+
+        function redirectToEvent(event, url) {
+            // Vérifie si l'élément cliqué est un bouton, un lien, un champ de commentaire ou son label ou son image
+            const isButtonOrLink = event.target.closest('button') || event.target.closest('a');
+            const isCommentFieldOrLabel = event.target.closest('label') || event.target.closest('textarea');
+            const isImage = event.target.closest('img');
+
+            // Si l'élément cliqué est un bouton, un lien, un champ de commentaire ou un label, on arrête l'événement
+            if (isButtonOrLink || isCommentFieldOrLabel || isImage) {
+                event.stopPropagation(); // Empêche l'événement de remonter et de déclencher la redirection
+                return;
+            }
+
+            // Sinon, on redirige vers l'URL de l'évènement
+            window.location.href = url;
+        }
+
+        // Message de confirmation avant de supprimer un post et d'annuler un évènement
+        document.addEventListener("DOMContentLoaded", function () {
+            const deleteButtons = document.querySelectorAll('form[action*="delete"]');
+            const cancelButtons = document.querySelectorAll('form[action*="cancel"]');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('submit', function (event) {
+                    const confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce post ?");
+                    if (!confirmation) {
+                        event.preventDefault();
+                    }
+                });
+            });
+
+            cancelButtons.forEach(button => {
+                button.addEventListener('submit', function (event) {
+                    const confirmation = confirm("Êtes-vous sûr de vouloir annuler votre participation à cet évènement ?");
+                    if (!confirmation) {
+                        event.preventDefault();
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

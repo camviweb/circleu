@@ -16,36 +16,14 @@
     {% block stylesheets %}{% endblock %}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
-
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            padding-top: 80px;
-            background-color: #f8f8f8;
-        }
-
-        .btn-primary {
-            background-color: #04649C !important;
-            border-color: #04649C !important;
-        }
-
-        .bg-primary {
-            background-color: #04649C !important;
-        }
-
-        .text-primary {
-            color: #04649C !important;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/base.css') }}">
 </head>
 
 {% include 'fragments/navbar.html.twig' %}
 
 {% for type, messages in app.flashes %}
     {% for message in messages %}
-        <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+        <div class="alert alert-{{ type }} alert-dismissible fade show position-fixed start-50 translate-middle-x" role="alert" style="z-index: 9999;">
             {{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>

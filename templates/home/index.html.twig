@@ -4,23 +4,6 @@
     Circle U
 {% endblock %}
 
-{% block stylesheets %}
-    <style>
-        .btn {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-            color: white;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-            transform: scale(1.05);
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
 
     <div class="position-relative text-start">
@@ -42,6 +25,7 @@
             <div class="col-md-4 d-flex flex-column justify-content-center align-items-center gap-4">
                 <a href="{{ path('app_blog') }}" class="btn btn-primary px-4 py-2">Voir le blog et chatter ! →</a>
                 <a href="{{ path('app_post') }}" class="btn btn-primary px-4 py-2">Créer un nouveau post →</a>
+                <a href="{{ path('app_events') }}" class="btn btn-primary px-4 py-2">Voir les événements →</a>
             </div>
             <div class="col-md-8 d-flex justify-content-center align-items-center">
                 <div class="card shadow-sm text-center d-flex flex-column" style="width: 300px;">

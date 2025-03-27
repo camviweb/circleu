@@ -6,37 +6,41 @@
     <div class="container py-5">
         <h1 class="mb-5 text-center fw-bold text-primary">BLOG</h1>
         <div class="text-center mt-4">
-            <a href="{{ path('app_post') }}" class="btn category-filter btn-dark btn-lg">Créer un post</a>
+            <a href="{{ path('app_post') }}" class="btn btn-primary btn-lg">Créer un post</a>
         </div>
     </div>
 
+    <div class="d-flex flex-wrap justify-content-center my-3">
+        <button class="btn category-filter btn-primary" data-category="">Tous catégories</button>
+        {% for category in categories %}
+            <button class="btn category-filter btn-light" data-category="{{ category }}">
+                {{ category }}
+            </button>
+        {% endfor %}
 
-<div class="d-flex flex-wrap justify-content-center my-3">
-    <button class="btn category-filter btn-dark" data-category="">Tous</button>
-    {% for category in categories %}
-        <button class="btn category-filter btn-light" data-category="{{ category }}">
-            {{ category }}
-        </button>
-    {% endfor %}
+        <div class="vr mx-3"></div>
 
-    {% for purpose in purposes %}
-        <button class="btn purpose-filter btn-light" data-purpose="{{ purpose }}">
-            {{ purpose }}
-        </button>
-    {% endfor %}
-
-</div> 
+        <button class="btn purpose-filter btn-primary" data-purpose="">Tous buts</button>
+        {% for purpose in purposes %}
+            <button class="btn purpose-filter btn-light" data-purpose="{{ purpose }}">
+                {{ purpose }}
+            </button>
+        {% endfor %}
+    </div>
 
     <div class="row justify-content-center">
         {% for post in posts %}
             <div class="col-md-8 post-card" data-category="{{ post.category }}" data-purpose="{{ post.purpose }}">
-                <div class="card mb-4 shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card mb-4 shadow-lg border-0 rounded-4 overflow-hidden"
+                     onclick="redirectToPost(event, '{{ path('app_post_show', {'id': post.id}) }}')"
+                     style="cursor: pointer;">
                     <!-- Badge catégorie (Alumni ou Question) -->
                     <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center position-absolute"
                          style="top: 10px; right: 10px; width: 40px; height: 40px; font-weight: bold;">
                         {{ post.purpose == 'Alumni' ? 'A' : 'Q' }}
                     </div>
-                    <p class="text-muted mb-0" style="position: absolute; top: 60px; right: 10px;">{{ post.category }}</p>
+                    <p class="text-muted mb-0"
+                       style="position: absolute; top: 60px; right: 10px;">{{ post.category }}</p>
 
                     <div class="card-body">
                         <!-- Informations utilisateur -->
@@ -53,28 +57,32 @@
                         <p class="card-text">{{ post.description }}</p>
 
                         {% if post.picture %}
-                            <img src="{{ asset('uploads/posts/' ~ post.picture) }}" class="img-fluid rounded mb-3 post-image"
+                            <img src="{{ asset('uploads/posts/' ~ post.picture) }}"
+                                 class="img-fluid rounded mb-3 post-image"
                                  alt="Image du post">
                         {% endif %}
 
                         <!-- Nombre de commentaires -->
                         <div class="d-flex align-items-center mt-3">
-                            <img src="{{ asset('images/comment_icon.png') }}" class="rounded-circle me-3" width="30"
-                                 height="30" alt="Comment">
+                            <i class="bi bi-chat-dots text-primary fs-5"></i>
                             <span class="ms-1">{{ post.comments|length }}</span>
                         </div>
 
+                        {#
                         <!-- Affichage des premiers commentaires -->
                         {% if post.comments is not empty %}
                             <div id="comments-container-{{ post.id }}">
-                                {% for comment in post.comments[:1] %}
+                                {% for comment in post.comments[:3] %}
                                     <div class="card mt-3 p-3 comment-{{ post.id }}">
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-2" width="30" height="30" alt="Avatar utilisateur">
-                                            <h6 class="fw-bold mb-0 text-primary">{{ comment.user.getFullName }}</h6>
+                                            <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-2"
+                                                 width="30" height="30" alt="Avatar utilisateur">
+                                            <div class="d-flex flex-column">
+                                                <h6 class="fw-bold mb-0 text-primary">{{ comment.user.getFullName }}</h6>
+                                                <small class="text-muted">{{ comment.createdDate|date('d/m/Y H:i') }}</small>
+                                            </div>
                                         </div>
                                         <p class="mt-2 mb-0">{{ comment.content }}</p>
-                                        <small class="text-muted">{{ comment.createdDate|date('d/m/Y H:i') }}</small>
                                     </div>
                                 {% endfor %}
                             </div>
@@ -83,7 +91,8 @@
                                 {% for comment in post.comments[3:] %}
                                     <div class="card mt-3 p-3 comment-{{ post.id }}">
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-2" width="30" height="30" alt="Avatar utilisateur">
+                                            <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-2"
+                                                 width="30" height="30" alt="Avatar utilisateur">
                                             <h6 class="fw-bold mb-0 text-primary">{{ comment.user.getFullName }}</h6>
                                         </div>
                                         <p class="mt-2 mb-0">{{ comment.content }}</p>
@@ -92,18 +101,19 @@
                                 {% endfor %}
                             </div>
                             {% if post.comments|length > 3 %}
-                                <button class="btn btn-link" onclick="toggleComments({{ post.id }})" id="toggle-btn-{{ post.id }}">Voir plus</button>
+                                <button class="btn btn-link text-primary" id="toggle-btn-{{ post.id }}"
+                                        onclick="toggleComments({{ post.id }})">Voir plus
+                                </button>
                             {% endif %}
                         {% else %}
                             <p>Aucun commentaire pour ce post.</p>
                         {% endif %}
+                        #}
 
                         <!-- Formulaire pour ajouter un commentaire -->
-                        {% include 'comment/comment.html.twig' with {'form': forms[post.id], 'post': post} %}
-
-
-                        
-                        
+                        {{ form_start(forms[post.id], {'action': path('app_comment_add', {'id': post.id}), 'method': 'POST'}) }}
+                        {{ form_widget(forms[post.id]) }}
+                        {{ form_end(forms[post.id]) }}
                     </div>
                 </div>
             </div>
@@ -115,116 +125,101 @@
 {% endblock %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/picture_in_post.css') }}">
+
     <style>
         .no-post-message {
             font-size: 1.5rem;
             color: #04649C;
             margin-top: 50px;
         }
-
-        .card {
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .post-image {
-            max-height: 300px; /* Hauteur max de l'image */
-            width: 100%;
-            object-fit: cover; /* Coupe l'image pour garder les proportions */
-            cursor: pointer;
-        }
-
-        #image-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        #image-overlay img {
-            max-width: 90%;
-            max-height: 90%;
-        }
-
-        #image-overlay.close-overlay {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 30px;
-            color: white;
-            cursor: pointer;
-        }
-
-        .category-filter.btn-light,
-        .purpose-filter.btn-light {
-            background-color: white; 
-            color: #04649C; 
-            border: 2px solid #04649C; 
-            margin: 5px;
-            border-radius: 30px;
-        }
-
-        .category-filter.btn-dark,
-        .purpose-filter.btn-dark{
-            background-color: #04649C; 
-            border: solid #04649C; 
-            color: white;
-            margin: 5px; 
-            border-radius: 30px;
-        }
     </style>
 {% endblock %}
 
 {% block javascripts %}
+    <script src="{{ asset('js/picture_in_post.js') }}"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const images = document.querySelectorAll(".post-image");
-            const overlay = document.createElement("div");
-            overlay.id = "image-overlay";
-            overlay.innerHTML = '<span class="close-overlay">&times;</span><img>';
-            document.body.appendChild(overlay);
+        $(document).ready(function () {
 
-            const overlayImage = overlay.querySelector("img");
-            const closeOverlay = overlay.querySelector(".close-overlay");
+            // Fonction pour filtrer les posts selon les deux critères (catégorie et but)
+            function filterPosts() {
+                let selectedCategory = $(".category-filter.btn-primary").data("category") || "";  // Récupère la catégorie sélectionnée
+                let selectedPurpose = $(".purpose-filter.btn-primary").data("purpose") || "";  // Récupère le but sélectionné
 
-            function disableScroll() {
-                document.body.style.overflow = "hidden"; // Désactive le scroll
-            }
+                $(".post-card").each(function () {
+                    let postCategory = $(this).data("category");
+                    let postPurpose = $(this).data("purpose");
 
-            function enableScroll() {
-                document.body.style.overflow = ""; // Réactive le scroll
-            }
-
-            images.forEach(img => {
-                img.addEventListener("click", function () {
-                    overlayImage.src = img.src;
-                    overlay.style.display = "flex";
-                    disableScroll();
+                    // Si le post correspond à la catégorie ET au but sélectionnés (ou aucun filtre si "Tous" est sélectionné)
+                    if ((selectedCategory === "" || postCategory === selectedCategory) &&
+                        (selectedPurpose === "" || postPurpose === selectedPurpose)) {
+                        $(this).show(); // Afficher le post si les deux critères correspondent
+                    } else {
+                        $(this).hide(); // Sinon, cacher le post
+                    }
                 });
-            });
+            }
 
-            closeOverlay.addEventListener("click", function () {
-                overlay.style.display = "none";
-                enableScroll();
-            });
-
-            overlay.addEventListener("click", function (e) {
-                if (e.target === overlay) {
-                    overlay.style.display = "none";
-                    enableScroll();
+            // Filtre pour les catégories
+            $(".category-filter").on("click", function () {
+                if ($(this).data("category") === "") {
+                    // Si "Tous catégories" est cliqué, laisser le bouton "Tous" en dark et désélectionner les autres
+                    $(".category-filter").removeClass("btn-primary").addClass("btn-light");
+                    $(this).removeClass("btn-light").addClass("btn-primary");
+                } else {
+                    // Sélectionner/Désélectionner la catégorie et laisser "Tous" en dark
+                    $(this).toggleClass("btn-light btn-primary");
+                    $(".category-filter[data-category='']").removeClass("btn-primary").addClass("btn-light");
                 }
+
+                // Vérifier si tous les filtres sont décochés pour réactiver "Tous"
+                checkIfAllDeselected();
+
+                // Appliquer le filtrage après avoir modifié l'état du bouton
+                filterPosts();
             });
+
+            // Filtre pour les buts
+            $(".purpose-filter").on("click", function () {
+                if ($(this).data("purpose") === "") {
+                    // Si "Tous buts" est cliqué, laisser le bouton "Tous" en dark et désélectionner les autres
+                    $(".purpose-filter").removeClass("btn-primary").addClass("btn-light");
+                    $(this).removeClass("btn-light").addClass("btn-primary");
+                } else {
+                    // Sélectionner/Désélectionner le but et laisser "Tous" en dark
+                    $(this).toggleClass("btn-light btn-primary");
+                    $(".purpose-filter[data-purpose='']").removeClass("btn-primary").addClass("btn-light");
+                }
+
+                // Vérifier si tous les filtres sont décochés pour réactiver "Tous"
+                checkIfAllDeselected();
+
+                // Appliquer le filtrage après avoir modifié l'état du bouton
+                filterPosts();
+            });
+
+            // Fonction pour vérifier si tous les filtres sont décochés
+            function checkIfAllDeselected() {
+                let categorySelected = $(".category-filter.btn-primary").length > 0;  // Vérifie si un filtre catégorie est sélectionné
+                let purposeSelected = $(".purpose-filter.btn-primary").length > 0;    // Vérifie si un filtre but est sélectionné
+
+                // Si aucun filtre catégorie et but n'est sélectionné, réactiver "Tous"
+                if (!categorySelected) {
+                    $(".category-filter[data-category='']").removeClass("btn-light").addClass("btn-primary");
+                }
+
+                if (!purposeSelected) {
+                    $(".purpose-filter[data-purpose='']").removeClass("btn-light").addClass("btn-primary");
+                }
+            }
+
         });
+    </script>
+
+    {#
+    <script>
         function toggleComments(postId) {
             let hiddenComments = document.getElementById("hidden-comments-" + postId);
             let toggleBtn = document.getElementById("toggle-btn-" + postId);
@@ -237,42 +232,6 @@
                 toggleBtn.textContent = "Voir plus"; // Remet le texte initial
             }
         }
-
-        $(document).ready(function () {
-
-            $(".category-filter").on("click", function () {
-                $(this).siblings().removeClass("btn-dark").addClass("btn-light");
-                $(this).removeClass("btn-light").addClass("btn-dark");
-
-                let selectedCategory = $(".category-filter.btn-dark").data("category") || "";
-
-                $(".post-card").each(function () {
-                    let postCategory = $(this).data("category");
-
-                    if (selectedCategory === "" || postCategory === selectedCategory) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-
-            $(".purpose-filter").on("click", function () {
-                $(this).siblings().removeClass("btn-dark").addClass("btn-light");
-                $(this).removeClass("btn-light").addClass("btn-dark");
-
-                let selectedPurpose = $(".purpose-filter.btn-dark").data("purpose") || "";
-
-                $(".post-card").each(function () {
-                    let postPurpose = $(this).data("purpose");
-
-                    if (selectedPurpose === "" || postPurpose === selectedPurpose) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-        });
     </script>
+    #}
 {% endblock %}

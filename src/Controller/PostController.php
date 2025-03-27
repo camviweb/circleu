@@ -54,5 +54,22 @@ class PostController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/post/{id}/delete', name: 'app_post_delete', methods: ['POST'])]
+    public function delete(Post $post, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->getUser() !== $post->getUser()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas supprimer ce post.');
+        }
+
+        // Marquer le post comme supprimé en ajoutant la date de suppression, on ne supprime pas vraiment le post
+        $post->setDeletedDate(new \DateTime());
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Le post a été supprimé.');
+
+        return $this->redirectToRoute('app_account');
+    }
 }
 ?>

@@ -1,0 +1,41 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-top: 80px;
+    background-color: #f8f8f8;
+}
+
+.card {
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: #04649C !important;
+    border-color: #04649C !important;
+}
+
+.bg-primary {
+    background-color: #04649C !important;
+}
+
+.text-primary {
+    color: #04649C !important;
+}
+
+.btn-primary:hover {
+    background-color: #034b73 !important;
+    border-color: #034b73 !important;
+}
+
+.btn {
+    transition: all 0.3s ease; !important;
+}
+
+.btn:hover {
+    transform: scale(1.05); !important;
+}

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Entity\Comment;
@@ -16,7 +17,8 @@ final class BlogController extends AbstractController
     #[Route('/blog', name: 'app_blog')]
     public function index(PostRepository $postRepository): Response
     {
-        $posts = $postRepository->findAll();
+        $posts = $postRepository->findBy(['deletedDate' => NULL], ['createdDate' => 'DESC']);
+
         $forms = [];
 
         $categories = [
@@ -49,9 +51,15 @@ final class BlogController extends AbstractController
     #[Route('/post/{id}/comment', name: 'app_comment_add', methods: ['POST'])]
     public function addComment(Post $post, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        if (!$user) {
+            $this->addFlash('danger', 'Vous devez être connecté pour commenter.');
+            return $this->redirectToRoute('app_login');
+        }
+
         $comment = new Comment();
         $comment->setPost($post);
-        $comment->setUser($this->getUser());
+        $comment->setUser($user);
         $comment->setDate(new \DateTime());
         $comment->setCreatedDate(new \DateTime());
 
@@ -65,8 +73,7 @@ final class BlogController extends AbstractController
             $this->addFlash('success', 'Votre commentaire a été ajouté.');
         }
 
-        return $this->redirectToRoute('app_blog');
+        // le renvoyer vers la page du post
+        return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
     }
 }
-
-
