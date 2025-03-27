@@ -142,6 +142,36 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/filtre_blog.js') }}"></script>
 
+    <script>
+        // Limité à 10 posts par page
+        document.addEventListener("DOMContentLoaded", function () {
+            let posts = document.querySelectorAll(".post-card");
+            let postsPerPage = 10;
+            let currentPostCount = postsPerPage;
+
+            function showPosts() {
+                posts.forEach((post, index) => {
+                    if (index < currentPostCount) {
+                        post.style.display = "block";
+                    } else {
+                        post.style.display = "none";
+                    }
+                });
+            }
+
+            showPosts();
+
+            window.addEventListener("scroll", function () {
+                if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                    if (currentPostCount < posts.length) {
+                        currentPostCount += postsPerPage;
+                        showPosts();
+                    }
+                }
+            });
+        });
+    </script>
+
     {#
     <script>
         function toggleComments(postId) {
