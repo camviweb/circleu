@@ -92,7 +92,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
         return $this;
     }
-
+    public function getFullName(): string
+    {
+        return $this->firstName . ' ' . $this->lastName;
+    }
     public function getEmail(): ?string
     {
         return $this->email;
@@ -291,4 +294,5 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     {
         return $this->email;
     }
+    
 }

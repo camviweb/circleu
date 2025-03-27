@@ -20,17 +20,17 @@ class PostType extends AbstractType
             ->add('category', ChoiceType::class, [
                 'label' => 'Catégorie',
                 'choices' => [
-                    'Mobilités' => 'mobilites',
-                    'Séjours Court' => 'sejours_court',
-                    'Cours et Conférences en ligne' => 'cours_conferences',
+                    'Mobilités' => 'Mobilités',
+                    'Séjours Court' => 'Séjours Court',
+                    'Cours et Conférences en ligne' => 'Cours Conférences',
                 ],
                 'attr' => ['class' => 'form-control']
             ])
             ->add('purpose', ChoiceType::class, [
                 'label' => 'But',
                 'choices' => [
-                    'Alumni' => 'alumni',
-                    'Question' => 'question',
+                    'Alumni' => 'Alumni',
+                    'Question' => 'Question',
                 ],
                 'attr' => ['class' => 'form-control']
             ])

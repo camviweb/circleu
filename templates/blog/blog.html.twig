@@ -27,7 +27,7 @@
                             <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-3" width="40"
                                  height="40" alt="Avatar utilisateur">
                             <div>
-                                <h5 class="fw-bold text-primary mb-0">{{ post.user.lastName }} {{ post.user.firstName }}</h5>
+                                <h5 class="fw-bold text-primary mb-0">{{ post.user.getFullName }}</h5>
                                 <p class="text-muted mb-0">{{ post.createdDate|date('d/m/Y H:i') }}</p>
                             </div>
                         </div>
@@ -47,37 +47,46 @@
                             <span class="ms-1">{{ post.comments|length }}</span>
                         </div>
 
-                        <!-- Affichage du premier commentaire si existant -->
+                        <!-- Affichage des premiers commentaires -->
                         {% if post.comments is not empty %}
-                            <div class="mt-3 p-3 bg-white">
-                                <div class="d-flex align-items-center">
-                                    <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-2"
-                                         width="30" height="30" alt="Avatar utilisateur">
-                                    <h6 class="fw-bold mb-0 text-primary">{{ post.comments[0].user.name }}</h6>
-                                </div>
-                                <p class="mt-2 mb-0">{{ post.comments[0].content }}</p>
+                            <div id="comments-container-{{ post.id }}">
+                                {% for comment in post.comments[:3] %}
+                                    <div class="card mt-3 p-3 comment-{{ post.id }}">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-2" width="30" height="30" alt="Avatar utilisateur">
+                                            <h6 class="fw-bold mb-0 text-primary">{{ comment.user.getFullName }}</h6>
+                                        </div>
+                                        <p class="mt-2 mb-0">{{ comment.content }}</p>
+                                        <small class="text-muted">{{ comment.createdDate|date('d/m/Y H:i') }}</small>
+                                    </div>
+                                {% endfor %}
                             </div>
+
+                            <div id="hidden-comments-{{ post.id }}" style="display: none;">
+                                {% for comment in post.comments[3:] %}
+                                    <div class="card mt-3 p-3 comment-{{ post.id }}">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ asset('images/user_icon.png') }}" class="rounded-circle me-2" width="30" height="30" alt="Avatar utilisateur">
+                                            <h6 class="fw-bold mb-0 text-primary">{{ comment.user.getFullName }}</h6>
+                                        </div>
+                                        <p class="mt-2 mb-0">{{ comment.content }}</p>
+                                        <small class="text-muted">{{ comment.createdDate|date('d/m/Y H:i') }}</small>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if post.comments|length > 3 %}
+                                <button class="btn btn-link" onclick="toggleComments({{ post.id }})" id="toggle-btn-{{ post.id }}">Voir plus</button>
+                            {% endif %}
+                        {% else %}
+                            <p>Aucun commentaire pour ce post.</p>
                         {% endif %}
 
-                        <!-- Zone de texte pour ajouter un commentaire -->
-                        <form action="{{ path('app_post_show', {'id': post.id}) }}" method="post" class="mt-4">
-                            <div class="form-group">
-                                <textarea name="content" class="form-control" rows="3"
-                                          placeholder="Ajouter un commentaire..."></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary mt-2">Ajouter un commentaire</button>
-                        </form>
+                        <!-- Formulaire pour ajouter un commentaire -->
+                        {% include 'comment/comment.html.twig' with {'form': forms[post.id], 'post': post} %}
 
-                        <!-- Affichage des commentaires existants -->
-                        {% for comment in post.comments %}
-                            <div class="card mt-3 p-3">
-                                <strong class="text-primary">{{ comment.user.name }}</strong>
-                                <p>{{ comment.content }}</p>
-                                <small class="text-muted">{{ comment.createdDate|date('d/m/Y H:i') }}</small>
-                            </div>
-                        {% else %}
-                            <p class="text-muted">Aucun commentaire pour le moment.</p>
-                        {% endfor %}
+
+                        
+                        
                     </div>
                 </div>
             </div>
@@ -180,5 +189,17 @@
                 }
             });
         });
+        function toggleComments(postId) {
+            let hiddenComments = document.getElementById("hidden-comments-" + postId);
+            let toggleBtn = document.getElementById("toggle-btn-" + postId);
+
+            if (hiddenComments.style.display === "none") {
+                hiddenComments.style.display = "block";
+                toggleBtn.textContent = "Voir moins"; // Change le texte du bouton
+            } else {
+                hiddenComments.style.display = "none";
+                toggleBtn.textContent = "Voir plus"; // Remet le texte initial
+            }
+        }
     </script>
 {% endblock %}
