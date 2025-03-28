@@ -26,7 +26,7 @@ class AccountController extends AbstractController
         // Vérifier si l'utilisateur est admin
         if (in_array('ROLE_ADMIN', $user->getRoles())) {
             // Si admin, afficher les événements qu'il a créés (organisés)
-            $events = $eventRepository->findBy(['organizer' => $user->getId()]);
+            $events = $eventRepository->findBy(['organizer' => $user->getId(), 'canceledDate' => NULL]);
         } else {
             // Sinon, afficher les événements auxquels il est inscrit
             $registrations = $registrationRepository->findBy(['email' => $user->getEmail()]);
